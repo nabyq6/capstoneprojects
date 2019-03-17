@@ -1,5 +1,6 @@
 import RPi.GPIO as gp
 import os
+import pipes
 
 gp.setwarnings(False)
 gp.setmode(gp.BOARD)
@@ -21,6 +22,7 @@ gp.output(21, True)
 gp.output(22, True)
 
 def main():
+ while( 1 )
     gp.output(7, False)
     gp.output(11, False)
     gp.output(12, True)
@@ -42,8 +44,16 @@ def main():
     capture(4)
 
 def capture(cam):
-    cmd = "raspistill -o capture_%d.jpg" % cam
-    os.system(cmd)
+    t = pipes.Template()
+    t.append('tr a-z A-Z')
+    f = t.open("Camera_Switch", 'r')
+    str = f.read()
+    if( str < 1)
+    break
+    else 
+    print "camera = 4 ", str
+
+
 
 if __name__ == "__main__":
     main()
