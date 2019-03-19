@@ -1,4 +1,6 @@
-//
+//********************************************************
+//***************this code is down for now****************
+//********************************************************
 //  main.c
 //  Mainthread
 //
@@ -15,47 +17,43 @@
 #include <stdint.h>
 #include <sys/time.h>
 #include <pthread.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <string.h>
+
 // included and works only on the pi
 #include <semaphore.h>
 
-void camera_information( int camera);
+#define control_file "control_file.txt"
+
+void write_camera_info_to_file( int needed_camera);
+
+
 
 int main(int argc, const char * argv[]) {
     
-    int camera;
+    int needed_camera;
     
-    printf("What camera would you like to switch it too: ");
-    scanf("%d", &camera );
+    while(1)
+    {
+        printf("\nWhat camera would you like to switch it too: ");
+        scanf("%d", &needed_camera);
+        write_camera_info_to_file(needed_camera);
+        printf("write was successful\n");
+    }
     
-    camera_information(camera);
+    return 0;
 }
 
-void camera_information( int camera)
-{
-    //goals is to have this progarm communicate with the python script and have it change cameras based on what LEE sends me
+void write_camera_info_to_file( int needed_camera){
+    FILE * camera_file;
+    camera_file = fopen(control_file, "w");
     
-    int camera_information;
-    int camera_needed = camera;
+    fprintf(camera_file, "%d", needed_camera);
     
-    printf("Reading from the button press setup\n");
-    
-    if((camera_information = open("Camera_Switch", O_WRONLY)) < 0)
-    {
-        printf("error opening pipe in camera_information used for scene switching\n");
-        exit(-1);
-    }
-    
-   // while (1) shouldnt need while loop for this application
-    {
-        if( write(camera_information, &camera_needed, sizeof(camera_needed)) < 0)
-        {
-            printf("Error writing the information for between processes communication\n");
-            exit(-1);
-        }
-        
-        printf("reading camera_information transfer occured occured\n");
-    }
+    fclose(camera_file);
     
 }
+
 
 
