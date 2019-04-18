@@ -6,6 +6,7 @@ import picamera.array
 import PiRGBArray
 import PiCamera
 '''
+import subprocess
 import os
 import time
 
@@ -47,14 +48,15 @@ def main():
             gp.output(7, True)
             gp.output(11, False)
             gp.output(12, True)
-            capture(2)
+            capture(3)
         
         if(camera[0] == "2"):
             print('camera 3')
             gp.output(7, False)
             gp.output(11, True)
             gp.output(12, False)
-            capture(3)
+            capture(2)
+
            
             #gp.output(7, True)
             #gp.output(11, True)
@@ -65,21 +67,31 @@ def capture(cam):
     new_cam = cam
 
     while cam == new_cam: 
-        cmd = "raspistill -o capture_.jpg " 
-        os.system(cmd)
+        cmd = "raspivid -o capture_.jpg " 
+        #os.system(cmd)
+        subprocess.call(cmd, shell=True)
         Fh = open('control_file.txt', 'r') 
         new_cam = Fh.readline(10)
         Fh.close()
-        print("audio is outputing")
+       # print("audio is outputing")
         pygame.mixer.init()
         print ("Read is:%s " % cam)
-        if( cam[0] == "1"):
-            print("hit")
+        
+        if( new_cam[0] == "1"):
             pygame.mixer.music.load("you-got-it-1.wav")
-#        if(cam == 2):
-#            pygame.mixer.music.load("test.m4a")
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy() == True:
+            pygame.mixer.music.play()
+            while pygame.mixer.music.get_busy() == True:
+                continue
+            
+        if(new_cam[0] == "2"):
+           pygame.mixer.music.load("seriously-right.wav")
+           pygame.mixer.music.play()
+           while pygame.mixer.music.get_busy() == True:
+            continue
+        if(new_cam[0] == "3"):
+           pygame.mixer.music.load("what-are-you-doing.wav")
+           pygame.mixer.music.play()
+           while pygame.mixer.music.get_busy() == True:
             continue
 '''
 camera = PiCamera();
